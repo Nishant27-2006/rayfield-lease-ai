@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cat:*)",
+      "Bash(echo)",
+      "Bash(npm run dev:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm run:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pkill:*)",
+      "Bash(node:*)",
+      "Bash(rm:*)",
+      "Bash(npm run build:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(true)",
+      "Bash(find:*)",
+      "Bash(npx shadcn-ui:*)",
+      "Bash(npx:*)",
+      "Bash(npm run lint)"
+    ],
+    "deny": []
+  }
+}
