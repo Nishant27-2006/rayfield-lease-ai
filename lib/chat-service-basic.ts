@@ -9,7 +9,7 @@ export class ChatService {
     // Initialize Gemini model
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
     this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-2.5-flash',
       generationConfig: {
         maxOutputTokens: 2048,
         temperature: 0.3,

@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize Gemini API
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" })
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
     // Create the full prompt
     const fullPrompt = OBLIGATIONS_EXTRACTION_PROMPT + humanReadableText

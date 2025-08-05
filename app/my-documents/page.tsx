@@ -154,6 +154,30 @@ export default function MyDocumentsPage() {
     }
   }
 
+  const handleExportObligations = async (fileId: string, fileName: string) => {
+    try {
+      const response = await fetch(`/api/export-obligations-dynamic/${fileId}`)
+      
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${fileName.replace(/\.[^/.]+$/, '')}-obligations.xlsx`
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(url)
+      } else {
+        console.error('Failed to export obligations')
+        setError('Failed to export obligations')
+      }
+    } catch (error) {
+      console.error('Error exporting obligations:', error)
+      setError('Error exporting obligations')
+    }
+  }
+
 
   const filteredFiles = userFiles.filter(file => {
     const matchesSearch = file.file_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -334,6 +358,14 @@ export default function MyDocumentsPage() {
                       >
                         <MessageSquare className="h-4 w-4 mr-2" />
                         Start Chat
+                      </Button>
+                      <Button 
+                        variant="secondary" 
+                        className="w-full"
+                        onClick={() => handleExportObligations(file.id, file.file_name)}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Extract Obligations
                       </Button>
                     </div>
                   </div>

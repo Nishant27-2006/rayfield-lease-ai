@@ -318,50 +318,36 @@ export default function AnalysisPage() {
   }
 
   const handleExportObligations = async () => {
-    if (!analysisData || !humanReadableText) {
-      alert('Please generate the readable report first before exporting obligations.')
+    if (!analysisData) {
+      alert('No analysis data available for export.')
       return
     }
     
     setExportingObligations(true)
     try {
-      const response = await fetch('/api/generate-obligations-csv', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          humanReadableText,
-          fileName: analysisData.file_name,
-          leaseType: analysisData.lease_type
-        }),
-      })
+      const response = await fetch(`/api/export-obligations-dynamic/${analysisData.id}`)
       
       if (response.ok) {
-        const data = await response.json()
-        
-        // Create and download CSV file
-        const blob = new Blob([data.csvContent], { type: 'text/csv;charset=utf-8;' })
+        const blob = await response.blob()
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = data.fileName
+        link.download = `${analysisData.file_name.replace(/\.[^/.]+$/, '')}-obligations.xlsx`
         document.body.appendChild(link)
         link.click()
         link.remove()
         window.URL.revokeObjectURL(url)
         
-        // Show success message
-        alert(`Technical obligations exported successfully! Found ${data.obligationsCount} obligations.`)
+        alert('Obligations exported successfully as Excel file!')
       } else {
         console.error('Response status:', response.status, response.statusText)
         const errorData = await response.json()
         console.error('Failed to export obligations:', errorData)
-        alert(`Failed to export technical obligations: ${errorData.error || 'Unknown error'}. Please try again.`)
+        alert(`Failed to export obligations: ${errorData.error || 'Unknown error'}. Please try again.`)
       }
     } catch (error) {
       console.error('Error exporting obligations:', error)
-      alert('Error exporting technical obligations. Please try again.')
+      alert('Error exporting obligations. Please try again.')
     } finally {
       setExportingObligations(false)
     }
@@ -850,19 +836,19 @@ export default function AnalysisPage() {
               <h1 className="text-3xl font-bold text-gray-900">Lease Analysis Results</h1>
               <Button 
                 onClick={handleExportObligations}
-                disabled={exportingObligations || !humanReadableText}
+                disabled={exportingObligations}
                 variant="outline"
                 className="flex items-center gap-2 border-orange-200 text-orange-700 hover:bg-orange-50 disabled:opacity-50"
               >
                 {exportingObligations ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
-                    Generating CSV...
+                    Extracting & Generating...
                   </>
                 ) : (
                   <>
                     <Download className="h-4 w-4" />
-                    Export Obligations CSV
+                    Extract Obligations to Excel
                   </>
                 )}
               </Button>
